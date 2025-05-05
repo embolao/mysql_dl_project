@@ -2,7 +2,7 @@ import click
 import mysql.connector
 
 
-@click.command()
+# @click.command()
 def init_db():
     """Inicializa la base de datos y la tabla users con datos."""
     conn = mysql.connector.connect(

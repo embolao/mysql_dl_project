@@ -2,12 +2,14 @@ import os
 
 import click
 
+from .init_db import init_db
 from .ml.pytorch_model import inspect_model as torch_inspect
 from .ml.pytorch_model import predict_model as torch_predict
 from .ml.pytorch_model import train_model as torch_train
 from .ml.sklearn_model import inspect_model as sk_inspect
 from .ml.sklearn_model import predict_model as sk_predict
 from .ml.sklearn_model import train_model as sk_train
+from .sql_runner import run_sql
 
 # from .utils.logging import append_log
 
@@ -89,3 +91,27 @@ def clear_logs():
             print(f"✅ Logs de {model_name.capitalize()} eliminados.")
         else:
             print(f"❌ No se encontraron logs de {model_name.capitalize()}.")
+
+
+# ----- Inicializar base de datos -----
+@cli.command(name="init-db")
+def init_db_command():
+    """Inicializa la base de datos y la tabla users con datos."""
+    init_db()  # Llamamos a la función init_db que se encuentra en init_db.py
+
+
+# ----- Inicializar sql -----
+@cli.command(name="query")
+@click.argument("query", nargs=-1)
+def run_sql_command(query):
+    """Ejecuta una consulta SQL."""
+    full_query = " ".join(query)
+    try:
+        results = run_sql(full_query)
+        if results:
+            for row in results:
+                print(row)
+        else:
+            print("✅ Consulta ejecutada correctamente.")
+    except Exception as e:
+        print(f"❌ Error al ejecutar la consulta: {e}")
