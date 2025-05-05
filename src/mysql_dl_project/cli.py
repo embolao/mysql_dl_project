@@ -105,7 +105,14 @@ def init_db_command():
 @click.argument("query", nargs=-1)
 def run_sql_command(query):
     """Ejecuta una consulta SQL."""
-    full_query = " ".join(query)
+    import sys
+
+    if not query:
+        # Leer desde stdin si no se proporcionó argumento
+        full_query = sys.stdin.read()
+    else:
+        full_query = " ".join(query)
+
     try:
         results = run_sql(full_query)
         if results:
